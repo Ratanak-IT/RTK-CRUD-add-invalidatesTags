@@ -27,6 +27,8 @@ import { Input } from "../ui/input"
 import { DataTablePagination } from "../ui/data-pagination"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { DataTableFacetedFilter } from "../ui/command-range"
+import { useCreateProductMutation } from "@/services/ecommerce"
+import { toast } from "sonner"
 
 
 interface DataTableProps<TData, TValue> {
@@ -44,6 +46,8 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  const [createNewProduct, {isLoading, err}] = useCreateProductMutation();
 
   const table = useReactTable({
     data,
@@ -90,6 +94,54 @@ export function DataTable<TData, TValue>({
       }));
   };
 
+  const newProduct = {
+    name: "B sl o❤️❤️❤️",
+    description:
+      "Premium ultrabook with a stunning display for professionals.",
+
+    computerSpec: {
+      processor: "Intel Core i7-13700H",
+      ram: "32GB DDR5",
+      storage: "1TB NVMe SSD",
+      gpu: "NVIDIA RTX 4050",
+      os: "Windows 11 Pro",
+      screenSize: "15.6-inch OLED",
+      battery: "86Wh",
+    },
+
+    stockQuantity: 24,
+    priceIn: 1450,
+    priceOut: 1899,
+    discount: 5,
+
+    color: [
+      {
+        color: "Platinum Silver",
+        images: ["https://example.com/silver-1.jpg"],
+      },
+    ],
+
+    thumbnail: "https://example.com/thumb.jpg",
+    warranty: "2 years",
+    availability: true,
+
+    images: ["https://example.com/img1.jpg"],
+
+    categoryUuid: "462d9f60-8346-45ab-b8b3-a597d240965b",
+    supplierUuid: "a34496d2-370e-4332-8c6d-b4a6bc069bf1",
+    brandUuid: "8f2e3bcb-bb0b-45a1-b9bc-1d43f08f0ddb",
+  };
+
+
+  const handleCreateProduct = ()=> {
+    try{
+      createNewProduct(newProduct);
+      toast.success("Product created successfully")
+    }catch(error: any){
+       toast.error(error?.data?.message || "Failed to Create product.");
+    }
+  }
+
   return (
     <>
       <div>
@@ -119,12 +171,18 @@ export function DataTable<TData, TValue>({
 
           </div>
 
+            <div>
           <DropdownMenu>
+
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
                 View
               </Button>
             </DropdownMenuTrigger>
+            <Button onClick={() => handleCreateProduct()} variant="outline" className="ml-auto">
+                Create Product
+              </Button>
+            
             <DropdownMenuContent align="end">
               {table
                 .getAllColumns()
@@ -141,6 +199,7 @@ export function DataTable<TData, TValue>({
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         </div>
 
         <div className="overflow-hidden rounded-md border">

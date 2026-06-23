@@ -8,7 +8,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { DataTableColumnHeader } from "../ui/data-table-column-header"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 
-
 // This type is used to define the shape of our data.
 
 export type ProductHeader = {
@@ -19,10 +18,15 @@ export type ProductHeader = {
 }
 
 type ColumnsProps = {
-  onViewDetail: (uuid:string) => void;
+  onViewDetail: (uuid: string) => void;
+  onUpdate: (uuid: string) => void;
+  onDelete: (uuid: string) => void;
 }
 
-export const columns=({onViewDetail}:ColumnsProps): ColumnDef<ProductHeader>[] => [
+
+export const columns=({onViewDetail, onUpdate, onDelete}:ColumnsProps): ColumnDef<ProductHeader>[] => [
+  
+  
   {
     id: "select",
     header: ({ table }) => (
@@ -111,8 +115,8 @@ export const columns=({onViewDetail}:ColumnsProps): ColumnDef<ProductHeader>[] =
               View Product Detail
             </DropdownMenuItem>
             {/* The students will implements these 2 functions */}
-            <DropdownMenuItem>Update Product</DropdownMenuItem>
-            <DropdownMenuItem>Delete Product</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onUpdate(product?.uuid)}>Update Product</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=> onDelete(product?.uuid)}>Delete Product</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
