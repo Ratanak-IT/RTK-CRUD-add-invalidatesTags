@@ -4,17 +4,16 @@ import {
   ProductType,
   UpdateProductType,
 } from "@/lib/products";
+import { BrandResponse, CategoryResponse, ContentResponse, SelectOption } from "@/lib/type/typeFilter";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Delete } from "lucide-react";
 
 export const ecommerceApi = createApi({
   reducerPath: "ecommerceApi",
-  
-  
+
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.NEXT_PUBLIC_ISHOP_BASE_URL}`,
   }),
-   tagTypes: ["Products"],
+  tagTypes: ["Products", "Files"],
   endpoints: (builder) => ({
     // getAllProducts
     getAllProduct: builder.query<
@@ -28,11 +27,11 @@ export const ecommerceApi = createApi({
     getProductByUuid: builder.query<ProductType, string>({
       query: (uuid: string) => ({
         url: `/products/${uuid}`,
-        providesTags: ["Products"]
+        providesTags: ["Products"],
       }),
     }),
     // create Product
-    createProduct: builder.mutation<CreateProductType, unknown, unknown>({
+    createProduct: builder.mutation<CreateProductType, unknown>({
       query: (newProduct: CreateProductType) => ({
         url: `/products`,
         method: "POST",
@@ -42,7 +41,7 @@ export const ecommerceApi = createApi({
         },
         body: newProduct,
       }),
-      invalidatesTags: ["Products"]
+      invalidatesTags: ["Products"],
     }),
 
     updateProduct: builder.mutation<UpdateProductType, unknown>({
@@ -53,23 +52,60 @@ export const ecommerceApi = createApi({
           "content-type": "application/json",
           authorization: `bearer ${accessToken}`,
         },
-        body: updateProduct
+        body: updateProduct,
       }),
-      invalidatesTags: ["Products"]
+      invalidatesTags: ["Products"],
     }),
 
     deleteProductByUuid: builder.mutation<string, unknown>({
-      query: ({uuid, accessToken}) => ({
+      query: ({ uuid, accessToken }) => ({
         url: `/products/${uuid}`,
         method: "DELETE",
         headers: {
           "content-type": "application/json",
-          authorization: `bearer ${accessToken}`
+          authorization: `bearer ${accessToken}`,
         },
       }),
-      invalidatesTags: ["Products"]
-    })
+      invalidatesTags: ["Products"],
+    }),
 
+    getCategory: builder.query<ContentResponse<SelectOption>, void>({
+      query: () => ({
+        url: `/categories`
+      }),
+    }),
+    getSupplier: builder.query<ContentResponse<SelectOption>, void>({
+      query: () => ({
+        url: `/suppliers`
+      }),
+    }),
+    getBrand: builder.query<ContentResponse<SelectOption>, void>({
+      query: () => ({
+        url: `/brands`
+      }),
+    }),
+
+
+
+
+
+    // uploadFile: builder.mutation<string, File>({
+    //   query: (files) => {
+    //     const formData = new FormData();
+
+    //     formData.append("files", files);
+
+    //     return {
+    //       url: "/medias/upload-multiple",
+    //       method: "POST",
+    //       headers: {
+    //         "content-type": "multipart/form-data",
+    //       },
+    //       body: formData,
+    //     };
+    //   },
+    //   invalidatesTags: ["Files"],
+    // }),
   }),
 });
 
@@ -78,5 +114,9 @@ export const {
   useGetProductByUuidQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
-  useDeleteProductByUuidMutation
+  useDeleteProductByUuidMutation,
+  // useUploadFileMutation,
+  useGetCategoryQuery,
+  useGetSupplierQuery,
+  useGetBrandQuery
 } = ecommerceApi;

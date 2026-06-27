@@ -61,7 +61,7 @@ export type CreateProductType = {
       ]
     }
   ],
-  thumbnail: string,
+  thumbnail: string | File;
   warranty: string,
   availability: true,
   images: [
@@ -71,3 +71,5 @@ export type CreateProductType = {
   supplierUuid: string,
   brandUuid: string
 }
+
+export type UploadFilesType = File[];

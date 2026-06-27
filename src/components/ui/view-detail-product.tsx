@@ -47,7 +47,7 @@ const ViewProductDetail = ({
           <Image
             width={500}
             height={500}
-            src={singleProduct?.thumbnail as string}
+            src={singleProduct?.thumbnail as string }
             alt="Silhouette with headphones"
             className="block size-full object-contain"
           />
